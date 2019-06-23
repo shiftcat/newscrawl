@@ -1,0 +1,17 @@
+
+spring.batch.job.names: ${job.name:NONE}
+
+logging:
+  level:
+    root: INFO
+    com.example: DEBUG
+
+
+spring:
+  batch:
+    job:
+      enabled: false
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017
+      database: crawl
