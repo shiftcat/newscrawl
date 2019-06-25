@@ -26,7 +26,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.kafka.core.KafkaTemplate;
+// import org.springframework.kafka.core.KafkaTemplate;
 
 import java.io.IOException;
 import java.net.URL;
@@ -52,7 +52,7 @@ public class ArticleScrapJobConfiguration
 
     private final ParserSelector parserSelector;
 
-    private final KafkaTemplate kafkaTemplate;
+    // private final KafkaTemplate kafkaTemplate;
 
 
 
@@ -141,7 +141,7 @@ public class ArticleScrapJobConfiguration
                         if( articleEntity != null ) {
                             articleEntity.setUrl(response.getUrl().toString());
                             saveArticle(e, articleEntity);
-                            sendToKafka(articleEntity);
+                            // sendToKafka(articleEntity);
                         }
                         else {
                             e.setIsScrap(-1);
@@ -208,10 +208,10 @@ public class ArticleScrapJobConfiguration
     }
 
 
-    private void sendToKafka(ArticleEntity entity)
-    {
-        kafkaTemplate.send("newscrawl", entity);
-    }
+//    private void sendToKafka(ArticleEntity entity)
+//    {
+//        kafkaTemplate.send("newscrawl", entity);
+//    }
 
 
 }

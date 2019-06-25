@@ -41,4 +41,6 @@ public class ArticleEntity
 
     private List<ImgTag> images;
 
+    private Integer sendToKafka;
+
 }

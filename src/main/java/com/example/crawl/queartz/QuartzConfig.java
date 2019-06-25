@@ -69,6 +69,25 @@ public class QuartzConfig
 
 
     @Bean
+    public JobDetail sendToKafkaJobDetail()
+    {
+        JobDataMap jobDataMap = new JobDataMap();
+        jobDataMap.put("jobName", "kafka");
+        jobDataMap.put("jobLauncher", jobLauncher);
+        jobDataMap.put("jobLocator", jobLocator);
+
+        return JobBuilder.newJob(NewsCrawlJobBean.class)
+                .withIdentity("sendToKafkaJobDetail")
+                .setJobData(jobDataMap)
+                .storeDurably()
+                .build();
+    }
+
+
+
+
+
+    @Bean
     public Trigger recentJobTrigger()
     {
         SimpleScheduleBuilder scheduleBuilder =
@@ -104,14 +123,34 @@ public class QuartzConfig
     }
 
 
+    @Bean
+    public Trigger sendToKafkaJobTrigger()
+    {
+        SimpleScheduleBuilder scheduleBuilder =
+                SimpleScheduleBuilder
+                        .simpleSchedule()
+                        .withIntervalInMinutes(1)
+                        .repeatForever();
+
+        return TriggerBuilder
+                .newTrigger()
+                .forJob(sendToKafkaJobDetail())
+                .withIdentity("sendToKafkaJobTrigger")
+                .withSchedule(scheduleBuilder)
+                .build();
+    }
+
 
     @Bean
     public SchedulerFactoryBean schedulerFactoryBean() throws IOException
     {
         SchedulerFactoryBean scheduler = new SchedulerFactoryBean();
-        scheduler.setTriggers(recentJobTrigger(), articleJobTrigger());
-        scheduler.setJobDetails(recentJobDetail(), articleJobDetail());
+
+        scheduler.setJobDetails(recentJobDetail(), articleJobDetail(), sendToKafkaJobDetail());
+        scheduler.setTriggers(recentJobTrigger(), articleJobTrigger(), sendToKafkaJobTrigger());
+
         scheduler.setQuartzProperties(quartzProperties());
+
         return scheduler;
     }
 
