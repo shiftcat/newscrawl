@@ -23,5 +23,5 @@ public class Config
      * 여기에 정의된 수 만큼 Target 서버에 요청하여 기사 본문을 스크랩 한다.
      *
      */
-    public static final int ARTICLE_SCRAP_SIZE = 30;
+    public static final int ARTICLE_SCRAP_SIZE = 50;
 }

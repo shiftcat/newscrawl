@@ -29,7 +29,7 @@ public class ArticleEntity
 
     private String subject;
 
-    private String article;
+    private String content;
 
     private String writer;
 
@@ -37,7 +37,9 @@ public class ArticleEntity
 
     private String date;
 
-    private String url;
+    private String requestUrl;
+
+    private String responseUrl;
 
     private List<ImgTag> images;
 

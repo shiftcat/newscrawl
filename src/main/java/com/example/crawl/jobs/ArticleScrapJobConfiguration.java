@@ -114,7 +114,7 @@ public class ArticleScrapJobConfiguration
         List<RecentEntity> recentEntities = recentMongoRepository.findIsNotScrap(pageable);
         recentEntities.stream()
                 .forEach(e -> {
-                    log.debug("Request url : " + e.getLink());
+                    log.debug("Request responseUrl : " + e.getLink());
                     log.debug("Read recent data : " + e.toString());
 
                     // Read
@@ -139,7 +139,8 @@ public class ArticleScrapJobConfiguration
 
                         // Write
                         if( articleEntity != null ) {
-                            articleEntity.setUrl(response.getUrl().toString());
+                            articleEntity.setRequestUrl(e.getLink());
+                            articleEntity.setResponseUrl(url);
                             saveArticle(e, articleEntity);
                             // sendToKafka(articleEntity);
                         }
@@ -157,11 +158,14 @@ public class ArticleScrapJobConfiguration
 
     private ArticleResponse readArticle(String url, ArticleId articleId) throws IOException
     {
+        log.debug("Read article => " + articleId);
 
         ArticleEntity existsArticle =
                 articleMongoRepository.findByArticleId(articleId);
 
         ArticleResponse rtnVal = null;
+
+        log.debug("Exists article => " + existsArticle);
 
         if(existsArticle == null) {
             Connection connect = Jsoup
@@ -172,7 +176,7 @@ public class ArticleScrapJobConfiguration
 
             URL realUrl = response.url();
 
-            log.debug("Response url : " + realUrl);
+            log.debug("Response responseUrl : " + realUrl);
 
             Document doc = response.parse();
 
@@ -198,6 +202,7 @@ public class ArticleScrapJobConfiguration
         }
         articleEntity.setWriter(recentEntity.getWriter());
         articleEntity.setArticleId(recentEntity.getArticleId());
+        articleEntity.setDate(recentEntity.getDate());
         articleMongoRepository.save(articleEntity);
     }
 

@@ -147,7 +147,7 @@ public class ChosunParser implements RecentParser, ArticleParser
 
         ArticleEntity article = new ArticleEntity();
         article.setSubject(subject);
-        article.setArticle(content);
+        article.setContent(content);
         article.setCate(cate);
         article.setImages(imgs);
 

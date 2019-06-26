@@ -24,7 +24,7 @@ public class KhanNewsParser implements ArticleParser
         String subject = node.select("div.art_header > div.subject > h1").text();
 
         // .//div[@class='art_body']/p[@class='content_text']
-        String article = node.select("div.art_body > p.content_text").text();
+        String content = node.select("div.art_body > p.content_text").text();
 
         // div[contains(@class, 'art_header')]/div[@class='subject']/span/a
         String writer = node.select("div.art_header > div.subject > span > a").text();
@@ -46,7 +46,7 @@ public class KhanNewsParser implements ArticleParser
 
         ArticleEntity entity = new ArticleEntity();
         entity.setSubject(subject);
-        entity.setArticle(article);
+        entity.setContent(content);
         entity.setWriter(writer);
         entity.setImages(imgs);
 

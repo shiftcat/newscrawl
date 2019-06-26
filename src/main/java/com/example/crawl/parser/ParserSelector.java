@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 
 @Slf4j
@@ -72,10 +73,16 @@ public class ParserSelector
         {
             Optional<ArticleParser> parserDomain =
                     Arrays.stream(ParserDomain.values())
-                            .filter(e -> url.contains(e.domain))
+                            .filter(e -> {
+                                log.debug("Parser select url => " + url);
+                                log.debug("Parser domain => " + e.domain);
+                                boolean bool = url.contains(e.domain);
+                                log.debug("url.contains(e.domain) => " + bool);
+                                return bool;
+                            })
                             .map(e -> e.getArticleParser())
                             .findFirst();
-            return parserDomain.orElse(Other.getArticleParser());
+            return parserDomain.orElseGet(() -> Other.getArticleParser());
         }
     }
 

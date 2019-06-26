@@ -93,7 +93,7 @@ public class QuartzConfig
         SimpleScheduleBuilder scheduleBuilder =
                 SimpleScheduleBuilder
                     .simpleSchedule()
-                    .withIntervalInSeconds(60 * 5)
+                    .withIntervalInMinutes(7)
                     .repeatForever();
 
         return TriggerBuilder
@@ -111,7 +111,7 @@ public class QuartzConfig
         SimpleScheduleBuilder scheduleBuilder =
                 SimpleScheduleBuilder
                     .simpleSchedule()
-                    .withIntervalInMinutes(13)
+                    .withIntervalInMinutes(3)
                     .repeatForever();
 
         return TriggerBuilder
@@ -129,7 +129,7 @@ public class QuartzConfig
         SimpleScheduleBuilder scheduleBuilder =
                 SimpleScheduleBuilder
                         .simpleSchedule()
-                        .withIntervalInMinutes(1)
+                        .withIntervalInSeconds(10)
                         .repeatForever();
 
         return TriggerBuilder
@@ -148,6 +148,9 @@ public class QuartzConfig
 
         scheduler.setJobDetails(recentJobDetail(), articleJobDetail(), sendToKafkaJobDetail());
         scheduler.setTriggers(recentJobTrigger(), articleJobTrigger(), sendToKafkaJobTrigger());
+
+//        scheduler.setJobDetails(sendToKafkaJobDetail());
+//        scheduler.setTriggers(sendToKafkaJobTrigger());
 
         scheduler.setQuartzProperties(quartzProperties());
 
