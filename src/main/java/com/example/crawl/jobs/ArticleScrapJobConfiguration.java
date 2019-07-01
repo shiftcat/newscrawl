@@ -22,15 +22,16 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.repeat.RepeatStatus;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-// import org.springframework.kafka.core.KafkaTemplate;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+
 
 
 /**
@@ -52,15 +53,13 @@ public class ArticleScrapJobConfiguration
 
     private final ParserSelector parserSelector;
 
-    // private final KafkaTemplate kafkaTemplate;
-
 
 
     @Bean
-    public Job articleScrapJob()
+    public Job articleScrapJob(@Qualifier("articleScrapStep") Step articleScrapStep)
     {
         return jobBuilderFactory.get("article")
-                .start(articleScrapStep())
+                .start(articleScrapStep)
                 .listener(new JobExecutionListener() {
                     @Override
                     public void beforeJob(JobExecution jobExecution) {
@@ -74,8 +73,6 @@ public class ArticleScrapJobConfiguration
                 })
                 .build();
     }
-
-
 
 
 
@@ -142,7 +139,6 @@ public class ArticleScrapJobConfiguration
                             articleEntity.setRequestUrl(e.getLink());
                             articleEntity.setResponseUrl(url);
                             saveArticle(e, articleEntity);
-                            // sendToKafka(articleEntity);
                         }
                         else {
                             e.setIsScrap(-1);
@@ -211,12 +207,6 @@ public class ArticleScrapJobConfiguration
     {
         recentMongoRepository.save(entity);
     }
-
-
-//    private void sendToKafka(ArticleEntity entity)
-//    {
-//        kafkaTemplate.send("newscrawl", entity);
-//    }
 
 
 }

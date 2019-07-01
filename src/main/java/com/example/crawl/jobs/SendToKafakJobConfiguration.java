@@ -14,7 +14,6 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -37,11 +36,12 @@ public class SendToKafakJobConfiguration
     private final KafkaTemplate kafkaTemplate;
 
 
+
     @Bean
-    public Job sendToKafkaJob()
+    public Job sendToKafkaJob(Step sendToKafkaStep)
     {
         return jobBuilderFactory.get("kafka")
-                .start(sendToKafkaStep())
+                .start(sendToKafkaStep)
                 .listener(new JobExecutionListener() {
                     @Override
                     public void beforeJob(JobExecution jobExecution) {
@@ -55,6 +55,7 @@ public class SendToKafakJobConfiguration
                 })
                 .build();
     }
+
 
 
     @Bean

@@ -1,5 +1,9 @@
 package com.example.crawl.queartz;
 
+import com.google.common.base.Throwables;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.batch.core.Job;
@@ -9,37 +13,17 @@ import org.springframework.batch.core.configuration.JobLocator;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
+@Slf4j
+@Setter
+@Getter
 public class NewsCrawlJobBean extends QuartzJobBean
 {
 
     private String jobName;
+
     private JobLauncher jobLauncher;
+
     private JobLocator jobLocator;
-
-    public String getJobName() {
-        return jobName;
-    }
-
-    public void setJobName(String jobName) {
-        this.jobName = jobName;
-    }
-
-    public JobLauncher getJobLauncher() {
-        return jobLauncher;
-    }
-
-    public void setJobLauncher(JobLauncher jobLauncher) {
-        this.jobLauncher = jobLauncher;
-    }
-
-    public JobLocator getJobLocator() {
-        return jobLocator;
-    }
-
-    public void setJobLocator(JobLocator jobLocator) {
-        this.jobLocator = jobLocator;
-    }
-
 
 
     @Override
@@ -55,7 +39,7 @@ public class NewsCrawlJobBean extends QuartzJobBean
             jobLauncher.run(job, params);
         }
         catch (Exception e) {
-            e.printStackTrace();
+            log.error(Throwables.getStackTraceAsString(e));
         }
     }
 }

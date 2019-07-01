@@ -59,7 +59,7 @@ public class ChosunRecentScrapConfiguration
 
 
 
-    private static final String RECENT_URL = "http://news.chosun.com/svc/list_in/list.html?source=1&pn=%d";
+    private static final String RECENT_URL = "http://news.chosun.com/svc/list_in/list.html?pn=%d";
 
 
 
