@@ -23,6 +23,18 @@ public class CommonConfig
 
 
 
+    private void randomDelay(float min, float max)
+    {
+        int random = (int)(max * Math.random() + min);
+        try {
+            Thread.sleep(random * 500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
     @Bean
     @StepScope
     public ItemWriter<List<RecentEntity>> recentWriter()
@@ -38,6 +50,8 @@ public class CommonConfig
                     }
                 });
             });
+
+            randomDelay(1.0f, 3.0f);
         };
     }
 

@@ -2,8 +2,8 @@ package com.example.crawl.jobs;
 
 import com.example.crawl.common.Config;
 import com.example.crawl.entities.ArticleEntity;
-import com.example.crawl.entities.ArticleId;
-import com.example.crawl.entities.ArticleResponse;
+import com.example.crawl.vo.ArticleId;
+import com.example.crawl.vo.ArticleResponse;
 import com.example.crawl.entities.RecentEntity;
 import com.example.crawl.parser.ArticleParser;
 import com.example.crawl.parser.ParserSelector;
@@ -27,6 +27,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.net.URL;
@@ -135,7 +136,7 @@ public class ArticleScrapJobConfiguration
                         }
 
                         // Write
-                        if( articleEntity != null ) {
+                        if( articleEntity != null && !StringUtils.isEmpty(articleEntity.getContent()) ) {
                             articleEntity.setRequestUrl(e.getLink());
                             articleEntity.setResponseUrl(url);
                             saveArticle(e, articleEntity);
@@ -146,7 +147,7 @@ public class ArticleScrapJobConfiguration
                         }
                     }
 
-                    randomDelay(0.3f, 1.9f);
+                    randomDelay(1f, 3f);
                 });
     }
 
@@ -198,7 +199,6 @@ public class ArticleScrapJobConfiguration
         }
         articleEntity.setWriter(recentEntity.getWriter());
         articleEntity.setArticleId(recentEntity.getArticleId());
-        articleEntity.setDate(recentEntity.getDate());
         articleMongoRepository.save(articleEntity);
     }
 

@@ -14,6 +14,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.Properties;
 
 @Configuration
@@ -109,7 +110,7 @@ public class QuartzConfig
     public Trigger recentJobTrigger()
     {
         ScheduleBuilder scheduleBuilder
-                = getScheduleBuilder(13);
+                = getScheduleBuilder(30);
 
         return TriggerBuilder
                 .newTrigger()
@@ -129,6 +130,7 @@ public class QuartzConfig
 
         return TriggerBuilder
                 .newTrigger()
+                .startAt(new Date(System.currentTimeMillis()+1000*60))
                 .forJob(articleJobDetail())
                 .withIdentity("articleJobTrigger")
                 .withSchedule(scheduleBuilder)

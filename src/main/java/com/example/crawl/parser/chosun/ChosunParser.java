@@ -1,10 +1,11 @@
 package com.example.crawl.parser.chosun;
 
 import com.example.crawl.entities.ArticleEntity;
-import com.example.crawl.entities.ArticleId;
-import com.example.crawl.entities.ImgTag;
+import com.example.crawl.vo.ArticleId;
+import com.example.crawl.vo.Byline;
+import com.example.crawl.vo.ImgTag;
 import com.example.crawl.entities.RecentEntity;
-import com.example.crawl.entities.Press;
+import com.example.crawl.vo.Press;
 import com.example.crawl.parser.ArticleParser;
 import com.example.crawl.parser.RecentParser;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+
+/**
+ *
+ * 조선일보 뉴스 파서 클래스
+ *
+ */
 
 @Slf4j
 @Component
@@ -104,23 +111,43 @@ public class ChosunParser implements RecentParser, ArticleParser
 
 
 
-    public ArticleEntity parse(Document doc)
+
+    private Byline getByline(Document doc)
     {
-        String subject = null;
-        String content = null;
-        String cate = null;
-        List<ImgTag> imgs = null;
+        Byline byline = new Byline();
 
-        subject = doc.select("div.news_title_text > h1").text();
+        String newsDate = doc.select("div.news_body > div.news_date").text();
+        log.debug("News date : " + newsDate);
+        String[] splitedNewsDate = null;
+        if(newsDate.contains("수정")) {
+            String[] slicedNewsDate = newsDate.split("\\|");
+            log.debug("slicedNewsDate => " + Arrays.toString(slicedNewsDate));
+            splitedNewsDate = slicedNewsDate[1].trim().split(" ");
+            byline.setUpdated(true);
+        }
+        else {
+            splitedNewsDate = newsDate.split(" ");
+        }
+        log.debug("splitedNewsDate => " + Arrays.toString(splitedNewsDate));
 
-        Elements bodyElements = doc.select("div.news_body > div.par");
-        List<String> contents = bodyElements.stream()
-                .map(element -> element.text())
-                .collect(Collectors.toList());
-        content = String.join("\n ", contents);
+        if(splitedNewsDate.length > 1) {
+            byline.setDate(splitedNewsDate[1]);
+        }
+        if(splitedNewsDate.length > 2) {
+            byline.setTime(splitedNewsDate[2]);
+        }
 
+        return byline;
+    }
+
+
+
+    private List<ImgTag> getImgs(Document doc)
+    {
         Elements imgElements = doc.select("div.news_body > div.news_imgbox");
-        imgs = imgElements.stream()
+
+        return
+            imgElements.stream()
                 .map(element -> {
                     Elements imgElement = element.select("figure > img");
 
@@ -141,15 +168,33 @@ public class ChosunParser implements RecentParser, ArticleParser
                     return imgTag;
                 })
                 .collect(Collectors.toList());
+    }
 
-        cate = findCate(doc);
 
+
+    public ArticleEntity parse(Document doc)
+    {
+        String subject = doc.select("div.news_title_text > h1").text();
+
+        Elements bodyElements = doc.select("div.news_body > div.par");
+        List<String> contents = bodyElements.stream()
+                .map(element -> element.text())
+                .collect(Collectors.toList());
+
+        String content = String.join("\n ", contents);
+
+        Byline byline = getByline(doc);
+        List<ImgTag> imgs = getImgs(doc);
+        String cate = findCate(doc);
 
         ArticleEntity article = new ArticleEntity();
         article.setSubject(subject);
         article.setContent(content);
         article.setCate(cate);
         article.setImages(imgs);
+        article.setArtiDate(byline.getDate());
+        article.setArtiTime(byline.getTime());
+        article.setUpdated(byline.isUpdated());
 
         log.debug(article.toString());
 

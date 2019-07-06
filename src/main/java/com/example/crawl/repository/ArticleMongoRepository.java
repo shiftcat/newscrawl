@@ -1,7 +1,7 @@
 package com.example.crawl.repository;
 
 import com.example.crawl.entities.ArticleEntity;
-import com.example.crawl.entities.ArticleId;
+import com.example.crawl.vo.ArticleId;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 

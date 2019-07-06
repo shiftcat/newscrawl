@@ -1,6 +1,8 @@
 package com.example.crawl.entities;
 
 
+import com.example.crawl.vo.ArticleId;
+import com.example.crawl.vo.ImgTag;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,7 +37,9 @@ public class ArticleEntity
 
     private String cate;
 
-    private String date;
+    private String artiDate;
+
+    private String artiTime;
 
     private String requestUrl;
 
@@ -44,5 +48,7 @@ public class ArticleEntity
     private List<ImgTag> images;
 
     private Integer sendToKafka;
+
+    private boolean updated;
 
 }

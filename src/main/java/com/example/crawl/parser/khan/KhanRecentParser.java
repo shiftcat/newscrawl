@@ -1,8 +1,8 @@
 package com.example.crawl.parser.khan;
 
-import com.example.crawl.entities.ArticleId;
+import com.example.crawl.vo.ArticleId;
 import com.example.crawl.entities.RecentEntity;
-import com.example.crawl.entities.Press;
+import com.example.crawl.vo.Press;
 import com.example.crawl.parser.RecentParser;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;

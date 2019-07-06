@@ -1,16 +1,14 @@
 package com.example.crawl.parser.khan;
 
 import com.example.crawl.entities.ArticleEntity;
-import com.example.crawl.entities.ImgTag;
+import com.example.crawl.vo.Byline;
+import com.example.crawl.vo.ImgTag;
 import com.example.crawl.parser.ArticleParser;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -29,30 +27,21 @@ public class KhanNewsParser implements ArticleParser
         // div[contains(@class, 'art_header')]/div[@class='subject']/span/a
         String writer = node.select("div.art_header > div.subject > span > a").text();
 
-        // div[contains(@class, 'art_photo photo_center
-        Elements imgNodes = node.select("div.art_photo > div.art_photo_wrap");
-        List<ImgTag> imgs =
-                imgNodes.stream().map(e -> {
-                    Element imgElem = e.select("img").first();
-                    String src = imgElem.attr("src");
-                    String alt = imgElem.attr("alt");
+        Byline byline = KhanParserUtil.parserByline(node);
 
-                    ImgTag imgTag = new ImgTag();
-                    imgTag.setSrc(src);
-                    imgTag.setAlt(alt);
-                    return imgTag;
-                })
-                .collect(Collectors.toList());
+        List<ImgTag> imgs = KhanParserUtil.parserImgTag(node);
 
-        ArticleEntity entity = new ArticleEntity();
-        entity.setSubject(subject);
-        entity.setContent(content);
-        entity.setWriter(writer);
-        entity.setImages(imgs);
+        ArticleEntity article = new ArticleEntity();
+        article.setSubject(subject);
+        article.setContent(content);
+        article.setWriter(writer);
+        article.setImages(imgs);
+        article.setArtiDate(byline.getDate());
+        article.setArtiTime(byline.getTime());
 
-        log.debug(entity.toString());
+        log.debug(article.toString());
 
-        return entity;
+        return article;
     }
 
 }

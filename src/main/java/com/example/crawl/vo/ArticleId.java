@@ -1,4 +1,4 @@
-package com.example.crawl.entities;
+package com.example.crawl.vo;
 
 import lombok.Getter;
 import lombok.Setter;
