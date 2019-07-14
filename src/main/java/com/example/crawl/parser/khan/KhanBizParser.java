@@ -39,6 +39,7 @@ public class KhanBizParser implements ArticleParser
         article.setImages(imgs);
         article.setArtiDate(byline.getDate());
         article.setArtiTime(byline.getTime());
+        article.setUpdated(byline.isUpdated());
 
         log.debug(article.toString());
 

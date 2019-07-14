@@ -2,15 +2,14 @@ package com.example.crawl.jobs;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobExecutionListener;
-import org.springframework.batch.core.Step;
+import org.springframework.batch.core.*;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.job.flow.Flow;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
 
 
 /**
@@ -28,9 +27,35 @@ public class RecentScrapJobConfiguration
     private final StepBuilderFactory stepBuilderFactory;
 
 
-    private final Step khanRecentScrapStep;
+//    private final Step khanRecentScrapStep;
+//
+//    private final Step chosunRecentScrapStep;
 
-    private final Step chosunRecentScrapStep;
+    private final Flow khanRecentScrapFlow;
+
+    private final Flow chosunRecentScrapFlow;
+
+
+//    @Bean
+//    public Job recentScrapJob()
+//    {
+//        return jobBuilderFactory.get("recent")
+//                .start(dumyStep())
+//                .next(khanRecentScrapStep)
+//                .next(chosunRecentScrapStep)
+//                .listener(new JobExecutionListener() {
+//                    @Override
+//                    public void beforeJob(JobExecution jobExecution) {
+//                        log.info("===== Recent scrap job begin ====");
+//                    }
+//
+//                    @Override
+//                    public void afterJob(JobExecution jobExecution) {
+//                        log.info("===== Recent scrap job end ====");
+//                    }
+//                })
+//                .build();
+//    }
 
 
     @Bean
@@ -38,8 +63,9 @@ public class RecentScrapJobConfiguration
     {
         return jobBuilderFactory.get("recent")
                 .start(dumyStep())
-                .next(khanRecentScrapStep)
-                .next(chosunRecentScrapStep)
+                .split(new SimpleAsyncTaskExecutor())
+                .add(khanRecentScrapFlow, chosunRecentScrapFlow)
+                .end()
                 .listener(new JobExecutionListener() {
                     @Override
                     public void beforeJob(JobExecution jobExecution) {

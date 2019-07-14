@@ -167,6 +167,7 @@ public class ArticleScrapJobConfiguration
         if(existsArticle == null) {
             Connection connect = Jsoup
                     .connect(url)
+                    .timeout(Config.CONNECTION_TIME_OUT)
                     .userAgent(Config.USER_AGENT);
 
             Connection.Response response = connect.execute();

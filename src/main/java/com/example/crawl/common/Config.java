@@ -14,7 +14,7 @@ public class Config
      *
      * 여기에 정의된 수 만큼 Target 서버에 요청하여 최신 기사 목록을 스크랩 한다.
      */
-    public static final int RECENT_MAX_PAGE = 5;
+    public static final int RECENT_MAX_PAGE = 3;
 
 
     /**
@@ -24,4 +24,7 @@ public class Config
      *
      */
     public static final int ARTICLE_SCRAP_SIZE = 50;
+
+
+    public static final int CONNECTION_TIME_OUT = 1000 * 30;
 }

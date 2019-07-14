@@ -14,6 +14,8 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.job.builder.FlowBuilder;
+import org.springframework.batch.core.job.flow.Flow;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
@@ -75,15 +77,25 @@ public class KhanRecentScrapConfiguration
                 .listener(new StepExecutionListener() {
                     @Override
                     public void beforeStep(StepExecution stepExecution) {
-                        log.debug("===== khanRecentScrapStep ====");
+                        log.debug("===== khanRecentScrapStep begin ====");
                     }
 
                     @Override
                     public ExitStatus afterStep(StepExecution stepExecution) {
-                        log.debug("==== khanRecentScrapStep ====");
+                        log.debug("==== khanRecentScrapStep end ====");
                         return ExitStatus.COMPLETED;
                     }
                 })
+                .build();
+    }
+
+
+
+    @Bean
+    public Flow khanRecentScrapFlow()
+    {
+        return new FlowBuilder<Flow>("khanRecentScrapFlow")
+                .start(khanRecentScrapStep())
                 .build();
     }
 
@@ -98,6 +110,7 @@ public class KhanRecentScrapConfiguration
             if(page != null) {
                 Document doc = Jsoup
                         .connect(String.format(RECENT_URL, page))
+                        .timeout(Config.CONNECTION_TIME_OUT)
                         .userAgent(Config.USER_AGENT)
                         .get();
                 return doc;
